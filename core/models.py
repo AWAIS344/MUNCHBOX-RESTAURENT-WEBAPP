@@ -30,3 +30,22 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Membership(models.Model):
+    MEMBERSHIP_TYPES = (
+        ('free', 'Free'),
+        ('premium', 'Premium'),
+        ('enterprise', 'Enterprise'),
+    )
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='memberships')
+    membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_TYPES, default='free')
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Membership"
+        verbose_name_plural = "Memberships"
+
+    def __str__(self):
+        return f"{self.restaurant.name} - {self.membership_type}"
