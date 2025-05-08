@@ -1,144 +1,316 @@
+# from django.db import models
+# from django.contrib.auth.models import User
+# from django.utils.text import slugify
+
+# # Create your models here.
+# class Restaurant(models.Model):
+#     name = models.CharField(max_length=100)
+#     slug = models.SlugField(max_length=100, unique=True, blank=True)
+#     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='restaurants')
+#     description = models.TextField()
+#     address = models.CharField(max_length=200)
+#     city = models.CharField(max_length=50)
+#     phone = models.CharField(max_length=20)
+#     email = models.EmailField()
+#     website = models.URLField(blank=True)
+#     cuisine_type = models.CharField(max_length=50, blank=True)
+#     logo = models.ImageField(upload_to='restaurant_logos/', blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#     is_active = models.BooleanField(default=True)
+
+#     class Meta:
+#         verbose_name = "Restaurant"
+#         verbose_name_plural = "Restaurants"
+
+#     def save(self, *args, **kwargs):
+#         if not self.slug:
+#             self.slug = slugify(self.name)
+#         super().save(*args, **kwargs)
+
+#     def __str__(self):
+#         return self.name
+    
+# class Membership(models.Model):
+#     MEMBERSHIP_TYPES = (
+#         ('free', 'Free'),
+#         ('premium', 'Premium'),
+#         ('enterprise', 'Enterprise'),
+#     )
+#     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='memberships')
+#     membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_TYPES, default='free')
+#     start_date = models.DateTimeField(auto_now_add=True)
+#     end_date = models.DateTimeField(blank=True, null=True)
+#     is_active = models.BooleanField(default=True)
+
+#     class Meta:
+#         verbose_name = "Membership"
+#         verbose_name_plural = "Memberships"
+
+#     def __str__(self):
+#         return f"{self.restaurant.name} - {self.membership_type}"
+
+# class Package(models.Model):
+#     name = models.CharField(max_length=50)
+#     description = models.TextField()
+#     price = models.DecimalField(max_digits=10, decimal_places=2)
+#     duration_days = models.PositiveIntegerField()
+#     max_listings = models.PositiveIntegerField(default=1)
+#     is_featured = models.BooleanField(default=False)
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     class Meta:
+#         verbose_name = "Package"
+#         verbose_name_plural = "Packages"
+
+#     def __str__(self):
+#         return self.name
+    
+# class Tag(models.Model):
+#     name = models.CharField(max_length=50, unique=True)
+#     slug = models.SlugField(max_length=50, unique=True, blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+
+#     class Meta:
+#         verbose_name = "Tag"
+#         verbose_name_plural = "Tags"
+
+#     def save(self, *args, **kwargs):
+#         if not self.slug:
+#             self.slug = slugify(self.name)
+#         super().save(*args, **kwargs)
+
+#     def __str__(self):
+#         return self.name
+    
+# class Review(models.Model):
+#     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='reviews')
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+#     rating = models.PositiveSmallIntegerField()
+#     comment = models.TextField(blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     class Meta:
+#         verbose_name = "Review"
+#         verbose_name_plural = "Reviews"
+
+#     def __str__(self):
+#         return f"{self.user.username} - {self.restaurant.name} ({self.rating})"
+
+
+# class ContactMessage(models.Model):
+#     name = models.CharField(max_length=100)
+#     email = models.EmailField()
+#     subject = models.CharField(max_length=200)
+#     message = models.TextField()
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     is_resolved = models.BooleanField(default=False)
+
+#     class Meta:
+#         verbose_name = "Contact Message"
+#         verbose_name_plural = "Contact Messages"
+
+#     def __str__(self):
+#         return f"{self.name} - {self.subject}"
+
+
+# class Category(models.Model):
+#     name = models.CharField(max_length=50)
+#     slug = models.SlugField(max_length=50, unique=True, blank=True)
+#     description = models.TextField(blank=True)
+
+#     class Meta:
+#         verbose_name = "Category"
+#         verbose_name_plural = "Categories"
+
+#     def save(self, *args, **kwargs):
+#         if not self.slug:
+#             self.slug = slugify(self.name)
+#         super().save(*args, **kwargs)
+
+#     def __str__(self):
+#         return self.name
+    
+# class RestaurantCategory(models.Model):
+#     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='categories')
+#     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='restaurants')
+
+#     class Meta:
+#         verbose_name = "Restaurant Category"
+#         verbose_name_plural = "Restaurant Categories"
+
+#     def __str__(self):
+#         return f"{self.restaurant.name} - {self.category.name}"
+
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.text import slugify
 
-# Create your models here.
-class Restaurant(models.Model):
+class Cuisine(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True, blank=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='restaurants')
-    description = models.TextField()
-    address = models.CharField(max_length=200)
-    city = models.CharField(max_length=50)
-    phone = models.CharField(max_length=20)
-    email = models.EmailField()
-    website = models.URLField(blank=True)
-    cuisine_type = models.CharField(max_length=50, blank=True)
-    logo = models.ImageField(upload_to='restaurant_logos/', blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
-
-    class Meta:
-        verbose_name = "Restaurant"
-        verbose_name_plural = "Restaurants"
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
-    
-class Membership(models.Model):
-    MEMBERSHIP_TYPES = (
-        ('free', 'Free'),
-        ('premium', 'Premium'),
-        ('enterprise', 'Enterprise'),
-    )
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='memberships')
-    membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_TYPES, default='free')
-    start_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-
-    class Meta:
-        verbose_name = "Membership"
-        verbose_name_plural = "Memberships"
-
-    def __str__(self):
-        return f"{self.restaurant.name} - {self.membership_type}"
 
 class Package(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.TextField()
+    name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    duration_days = models.PositiveIntegerField()
-    max_listings = models.PositiveIntegerField(default=1)
-    is_featured = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "Package"
-        verbose_name_plural = "Packages"
+    duration = models.IntegerField(help_text="Duration in days")
+    description = models.TextField()
 
     def __str__(self):
         return self.name
-    
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=50, unique=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        verbose_name = "Tag"
-        verbose_name_plural = "Tags"
+class Restaurant(models.Model):
+    name = models.CharField(max_length=200)
+    phone = models.CharField(max_length=20)
+    manager_name = models.CharField(max_length=100)
+    manager_phone = models.CharField(max_length=20)
+    contact_email = models.EmailField()
+    country = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    DELIVERY_PICKUP_CHOICES = [
+        ('delivery', 'Delivery'),
+        ('pickup', 'Pickup'),
+        ('both', 'Delivery & Pickup'),
+    ]
+    delivery_pickup = models.CharField(max_length=20, choices=DELIVERY_PICKUP_CHOICES)
+    cuisines = models.ManyToManyField(Cuisine)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='restaurants')
+    package = models.ForeignKey(Package, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.name
+
+class MenuItem(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='menu_items')
+    name = models.CharField(max_length=200)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField(blank=True)
+    image = models.ImageField(upload_to='menu_images/', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.restaurant.name}"
+
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+    name = models.CharField(max_length=100)  # e.g., "Home", "Work"
+    street = models.CharField(max_length=200)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=100)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    cross_street = models.CharField(max_length=200, blank=True)
+    is_default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.name} - {self.user.username}"
+
+class PaymentMethod(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payment_methods')
+    type = models.CharField(max_length=20, choices=[('credit_card', 'Credit Card'), ('paypal', 'PayPal')])
+    brand = models.CharField(max_length=20, blank=True, choices=[('visa', 'Visa'), ('mastercard', 'MasterCard'), ('amex', 'American Express'), ('discover', 'Discover')])
+    last_4 = models.CharField(max_length=4, blank=True)
+    exp_month = models.IntegerField(blank=True, null=True)
+    exp_year = models.IntegerField(blank=True, null=True)
+    paypal_email = models.EmailField(blank=True)
+    token = models.CharField(max_length=100, blank=True)  # Token from payment gateway
+
+    def __str__(self):
+        return f"{self.get_type_display()} - {self.user.username}"
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    order_number = models.CharField(max_length=20, unique=True, blank=True)
+    # Delivery address
+    delivery_street = models.CharField(max_length=200)
+    delivery_city = models.CharField(max_length=100)
+    delivery_state = models.CharField(max_length=100)
+    delivery_zip_code = models.CharField(max_length=20)
+    delivery_country = models.CharField(max_length=100)
+    delivery_latitude = models.FloatField(null=True, blank=True)
+    delivery_longitude = models.FloatField(null=True, blank=True)
+    delivery_phone = models.CharField(max_length=20, blank=True)
+    delivery_cross_street = models.CharField(max_length=200, blank=True)
+    delivery_instructions = models.TextField(blank=True)
+    # Financials
+    items_subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    gift_card_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    promo_discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)  # After discounts
+    tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    tip_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    donation_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    # Payment
+    payment_type = models.CharField(max_length=20, choices=[('credit_card', 'Credit Card'), ('paypal', 'PayPal'), ('cash', 'Cash')])
+    payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, blank=True)
+    is_paid = models.BooleanField(default=False)
+    # Status
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('preparing', 'Preparing'),
+        ('out_for_delivery', 'Out for Delivery'),
+        ('delivered', 'Delivered')
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    delivered_at = models.DateTimeField(null=True, blank=True)
+    estimated_delivery_time = models.CharField(max_length=50, blank=True)  # e.g., "9:00pm-9:10pm"
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
+        if not self.order_number:
+            # Generate a unique order number, e.g., based on timestamp and ID
+            self.order_number = f"ORD{self.id or Order.objects.count() + 1:015d}"
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
-    
+        return f"Order {self.order_number} by {self.user.username} from {self.restaurant.name}"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.menu_item.name}"
+
+class BlogPost(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
+    published_date = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+class Comment(models.Model):
+    post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)], null=True, blank=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Comment by {self.author.username} on {self.post.title}"
+
 class Review(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
-    rating = models.PositiveSmallIntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        verbose_name = "Review"
-        verbose_name_plural = "Reviews"
-
     def __str__(self):
-        return f"{self.user.username} - {self.restaurant.name} ({self.rating})"
-
-
-class ContactMessage(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    subject = models.CharField(max_length=200)
-    message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_resolved = models.BooleanField(default=False)
-
-    class Meta:
-        verbose_name = "Contact Message"
-        verbose_name_plural = "Contact Messages"
-
-    def __str__(self):
-        return f"{self.name} - {self.subject}"
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50, unique=True, blank=True)
-    description = models.TextField(blank=True)
-
-    class Meta:
-        verbose_name = "Category"
-        verbose_name_plural = "Categories"
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
-    
-class RestaurantCategory(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='categories')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='restaurants')
-
-    class Meta:
-        verbose_name = "Restaurant Category"
-        verbose_name_plural = "Restaurant Categories"
-
-    def __str__(self):
-        return f"{self.restaurant.name} - {self.category.name}"
+        return f"Review by {self.user.username} for {self.restaurant.name}"

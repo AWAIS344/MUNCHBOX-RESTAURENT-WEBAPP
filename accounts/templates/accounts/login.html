@@ -1,14 +1,19 @@
-
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+Login
+{% endblock title %}
+{% block content %}
   <div class="inner-wrapper">
     <div class="container-fluid no-padding">
       <div class="row no-gutters overflow-auto">
         <div class="col-md-6">
           <div class="main-banner">
-            <img src="assets/img/banner/banner-1.jpg" class="img-fluid full-width main-img" alt="banner">
+            <img src="{% static 'core/img/banner/banner-1.jpg' %} " class="img-fluid full-width main-img" alt="banner">
             <div class="overlay-2 main-padding">
-              <img src="assets/img/logo-2.jpg" class="img-fluid" alt="logo">
+              <img src="{% static 'core/img/logo-2.jpg' %} " class="img-fluid" alt="logo">
             </div>
-            <img src="assets/img/banner/burger.png" class="footer-img" alt="footer-img">
+            <img src="{% static 'core/img/banner/burger.png' %} " class="footer-img" alt="footer-img">
           </div>
         </div>
         <div class="col-md-6">
@@ -36,7 +41,7 @@
                       </div>
                       <div class="form-group">
                         <button type="submit" class="btn-second btn-submit full-width">
-                          <img src="assets/img/M.png" alt="btn logo">Sign in</button>
+                          <img src="{% static 'core/img/M.png' %} " alt="btn logo">Sign in</button>
                       </div>
                       <div class="form-group text-center"> <span>or</span>
                       </div>
@@ -46,7 +51,7 @@
                       </div>
                       <div class="form-group">
                         <button type="submit" class="btn-second btn-google full-width">
-                          <img src="assets/img/google-logo.png" alt="btn logo">Continue with Google</button>
+                          <img src="{% static 'core/img/google-logo.png' %} " alt="btn logo">Continue with Google</button>
                       </div>
                       <div class="form-group text-center mb-0"> <a href="register.html">Create your account</a>
                       </div>
@@ -60,3 +65,6 @@
       </div>
     </div>
   </div>
+  {% endblock content %}
+
+  {% block footer %}{% endblock footer %}
