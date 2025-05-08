@@ -131,3 +131,14 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+class RestaurantCategory(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='categories')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='restaurants')
+
+    class Meta:
+        verbose_name = "Restaurant Category"
+        verbose_name_plural = "Restaurant Categories"
+
+    def __str__(self):
+        return f"{self.restaurant.name} - {self.category.name}"
