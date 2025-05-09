@@ -28,10 +28,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+JAZZMIN_SETTINGS = {
+    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    "site_title": "MUNCHBOX RESTAURENT",
+     # Copyright on the footer
+    "copyright": "Acme Library Ltd",}
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,7 +48,8 @@ INSTALLED_APPS = [
     "accounts",
     "restaurents",
     "blog",
-    "core"
+    "core",
+    "home",
 ]
 
 MIDDLEWARE = [
