@@ -32,7 +32,7 @@ JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "MUNCHBOX RESTAURENT",
      # Copyright on the footer
-    "copyright": "Acme Library Ltd",}
+    "copyright": "Awais Ali Shah @2025",}
 
 
 # Application definition
