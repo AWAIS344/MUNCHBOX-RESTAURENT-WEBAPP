@@ -18,5 +18,5 @@ class RegistartionForm(UserCreationForm):
         }
 
 class LoginFrom(AuthenticationForm):
-    username=UsernameField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Your Username Here","autofocus":True}))
-    password=forms.CharField(widget=forms.PasswordInput(attrs={"class":"form-control","placeholder":"Your Username Here"}))
+    username=UsernameField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"e.g Awais Ali","autofocus":True}))
+    password=forms.CharField(widget=forms.PasswordInput(attrs={"class":"form-control","placeholder":"e.g ********"}))
