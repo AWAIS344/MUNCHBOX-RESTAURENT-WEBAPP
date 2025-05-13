@@ -1,6 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm,UsernameField
 from django import forms
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+import re
 
 class RegistartionForm(UserCreationForm):
 
@@ -16,6 +18,28 @@ class RegistartionForm(UserCreationForm):
         widgets={
             "username":forms.TextInput(attrs={"placeholder":"e.g awais8900" , "class":"form-control"}),
         }
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+
+        # Check if passwords match
+        if password1 and password2 and password1 != password2:
+            raise ValidationError("Passwords do not match.")
+
+        # Custom password strength check
+        if password1:
+            if len(password1) < 8:
+                raise ValidationError("Password must be at least 8 characters long.")
+            if not re.search(r"\d", password1):
+                raise ValidationError("Password must contain at least one number.")
+            if not re.search(r"[A-Z]", password1):
+                raise ValidationError("Password must contain at least one uppercase letter.")
+            if not re.search(r"[a-z]", password1):
+                raise ValidationError("Password must contain at least one lowercase letter.")
+
+        return cleaned_data
 
 class LoginFrom(AuthenticationForm):
     username=UsernameField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"e.g Awais Ali","autofocus":True}))
