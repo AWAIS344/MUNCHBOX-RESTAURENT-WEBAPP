@@ -6,17 +6,16 @@ from .form import RegistartionForm,LoginForm
 
 # Create your views here.
 def register(request):
-    form=RegistartionForm()
-    home = reverse("home")
     if request.method == "POST":
-        form=RegistartionForm(request.POST)
+        form = RegistartionForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(home)
+            return HttpResponseRedirect(reverse("home"))
+        else:
+            print("Form is not valid")
     else:
-        form=RegistartionForm()
-    context={"form":form}
-    return render(request,"accounts/registration.html",context)
+        form = RegistartionForm()
+    return render(request, "accounts/registration.html", {"form": form})
 
 def login(request):
     form=LoginForm()
