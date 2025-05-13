@@ -28,36 +28,43 @@ Registration
             <div class="login-sec">
               <div class="login-box">
                 <form action="" method="POST">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
                   <h4 class="text-light-black fw-600">Create your account</h4>
                   <div class="row">
                     <div class="col-lg-6 col-md-12 col-sm-6">
                       <div class="form-group">
                         <label class="text-light-white fs-14">First name</label>
                         {{form.first_name}}
+                        {{ form.first_name.errors }}
                       </div>
                     </div>
                     <div class="col-lg-6 col-md-12 col-sm-6">
                       <div class="form-group">
                         <label class="text-light-white fs-14">Last name</label>
                         {{form.last_name}}
+                        {{ form.last_name.errors }}
                       </div>
                     </div>
                     <div class="col-12">
                       <div class="form-group">
                         <label class="text-light-white fs-14">Email</label>
                         {{form.Email}}
+                        {{ form.Email.errors }}
                       </div>
                       <div class="form-group">
                         <label class="text-light-white fs-14">Password (8 character minimum)</label>
                         {{form.password1}}
                         <div data-name="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></div>
+                        {{ form.password1.errors }}
+
                       </div>
 
                       <div class="form-group">
                         <label class="text-light-white fs-14">Password (8 character minimum)</label>
                         {{form.password2}}
-                       
-                      </div>
+                        {{ form.password2.errors }}
+                      </div> 
 
                       <div class="form-group checkbox-reset">
                         <label class="custom-checkbox mb-0">

@@ -1,8 +1,11 @@
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm,UsernameField
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 import re
+
+User = get_user_model()
 
 class RegistartionForm(UserCreationForm):
 
@@ -40,7 +43,19 @@ class RegistartionForm(UserCreationForm):
                 raise ValidationError("Password must contain at least one lowercase letter.")
 
         return cleaned_data
+    
 
-class LoginFrom(AuthenticationForm):
-    username=UsernameField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"e.g Awais Ali","autofocus":True}))
-    password=forms.CharField(widget=forms.PasswordInput(attrs={"class":"form-control","placeholder":"e.g ********"}))
+class LoginForm(AuthenticationForm):
+    username = forms.EmailField(
+        widget=forms.EmailInput(attrs={"class": "form-control", "placeholder": "e.g xyz@gmail.com", "autofocus": True}),
+        label="Email"
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "e.g ********"}),
+        label="Password"
+    )
+
+    def confirm_login_allowed(self, user):
+        # Optionally block inactive users
+        if not user.is_active:
+            raise forms.ValidationError("This account is inactive.", code="inactive")
