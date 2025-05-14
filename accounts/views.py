@@ -12,7 +12,7 @@ def register(request):
         form = RegistartionForm(request.POST)
         if form.is_valid():
             user=form.save()
-            login(request, user)
+            # login(request, user)
             return HttpResponseRedirect(reverse("home"))
         else:
             print("Form is not valid")
@@ -31,7 +31,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()  # Use AuthenticationForm's built-in authentication
             if user is not None:
-                login(request, user, backend='your_app.backends.EmailBackend')
+                login(request, user, backend='accounts.backends.EmailBackend')
                 return HttpResponseRedirect(home)
             else:
                 form.add_error(None, "Invalid email or password.")
