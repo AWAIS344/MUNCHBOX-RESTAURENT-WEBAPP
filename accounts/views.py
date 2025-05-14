@@ -9,7 +9,8 @@ def register(request):
     if request.method == "POST":
         form = RegistartionForm(request.POST)
         if form.is_valid():
-            form.save()
+            user=form.save()
+            login(request, user)
             return HttpResponseRedirect(reverse("home"))
         else:
             print("Form is not valid")
@@ -37,6 +38,8 @@ def login(request):
                 if user is not None:
                     login(request,user)
                     return HttpResponseRedirect(home)
+            else:
+                print("invalid form data")
         else:
             form=LoginForm()
         context={"form":form}
