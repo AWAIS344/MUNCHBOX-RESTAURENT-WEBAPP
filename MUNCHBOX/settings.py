@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 
 AUTHENTICATION_BACKENDS = [
     'accounts.backends.EmailBackend',  # replace with your actual app name
-    'django.contrib.auth.backends.ModelBackend',  # fallback
+
 ]
 
 

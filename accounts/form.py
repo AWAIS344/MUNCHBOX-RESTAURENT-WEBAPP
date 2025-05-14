@@ -1,6 +1,10 @@
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm,UsernameField
 from django import forms
 from django.contrib.auth.models import User
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate
+
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 import re
@@ -51,17 +55,26 @@ class RegistartionForm(UserCreationForm):
         return cleaned_data
     
 
+
 class LoginForm(AuthenticationForm):
     username = forms.EmailField(
-        widget=forms.EmailInput(attrs={"class": "form-control", "placeholder": "e.g xyz@gmail.com", "autofocus": True}),
+        widget=forms.EmailInput(attrs={
+            "class": "form-control",
+            "placeholder": "you@example.com",
+            "autofocus": True
+        }),
         label="Email"
     )
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "e.g ********"}),
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control",
+            "placeholder": "********"
+        }),
         label="Password"
     )
 
-    def confirm_login_allowed(self, user):
-        # Optionally block inactive users
-        if not user.is_active:
-            raise forms.ValidationError("This account is inactive.", code="inactive")
+    def clean(self):
+        return super().clean()
+
+    def get_user(self):
+        return getattr(self, 'user', None)
