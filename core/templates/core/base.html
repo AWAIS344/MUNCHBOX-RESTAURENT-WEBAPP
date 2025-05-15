@@ -110,15 +110,8 @@
                                                                     <h6 class="cat-name"><a href="#" class="text-light-black">Home Pages</a></h6>
                                                                 </div>
                                                                 <ul>
-                                                                    <li><a href="index-2.html" class="text-light-white fw-500">Landing Page</a>
-                                                                    </li>
-                                                                    <li class="active"><a href="homepage-1.html" class="text-light-white fw-500">Home Page 1</a>
-                                                                    </li>
-                                                                    <li><a href="homepage-2.html" class="text-light-white fw-500">Home Page 2</a>
-                                                                    </li>
-                                                                    <li><a href="homepage-3.html" class="text-light-white fw-500">Home Page 3</a>
-                                                                    </li>
-                                                                    <li><a href="homepage-4.html" class="text-light-white fw-500">Home Page 4</a>
+                                                                    
+                                                                    <li><a href="{% url 'home' %}" class="text-light-white fw-500">Home</a>
                                                                     </li>
                                                                 </ul>
                                                             </div>
@@ -129,12 +122,11 @@
                                                                     <h6 class="cat-name"><a href="#" class="text-light-black">Inner Pages</a></h6>
                                                                 </div>
                                                                 <ul>
-                                                                    <li><a href="blog.html" class="text-light-white fw-500">Blog Grid View</a>
-                                                                    </li>
+                                                                    
                                                                     <li><a href="blog-style-2.html" class="text-light-white fw-500">Blog Grid View 2</a>
                                                                     </li>
-                                                                    <li><a href="blog-details.html" class="text-light-white fw-500">Blog Details</a>
-                                                                    </li>
+                                                                    {% comment %} <li><a href="blog-details.html" class="text-light-white fw-500">Blog Details</a>
+                                                                    </li> {% endcomment %}
                                                                     <li><a href="ex-deals.html" class="text-light-white fw-500">Ex Deals</a>
                                                                     </li>
                                                                     <li><a href="about.html" class="text-light-white fw-500">About Us</a>
