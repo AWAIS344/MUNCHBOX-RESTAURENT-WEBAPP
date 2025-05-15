@@ -193,9 +193,10 @@
                             </div>
                             <!-- mobile search -->
                             <!-- user account -->
+                            {% if user.is_authenticated %}
                             <div class="user-details p-relative">
                                 <a href="#" class="text-light-white fw-500">
-                                    <img src="{% static 'core/img/user-1.png' %} " class="rounded-circle" alt="userimg"> <span>Hi, Kate</span>
+                                    <img src="{% static 'core/img/user-1.png' %} " class="rounded-circle" alt="userimg"> <span>Hi, {{user.first_name}} {{user.last_name}}</span>
                                 </a>
                                 <div class="user-dropdown">
                                     <ul>
@@ -248,10 +249,25 @@
                                             </a>
                                         </li>
                                     </ul>
-                                    <div class="user-footer"> <span class="text-light-black">Not Jhon?</span> <a href="{% url 'logout' %}">Sign Out</a>
+                                    
+                                    <div class="user-footer"> <span class="text-light-black">Not {{user.first_name}}?</span> <a href="{% url 'logout' %}">Sign Out</a>
                                     </div>
+                                    
+
                                 </div>
                             </div>
+                            {% else %}
+                            {% comment %} <div class="user-details p-relative">
+                                <a href="#" class="text-light-white fw-500">
+                                    <img src="{% static 'core/img/user-1.png' %} " class="rounded-circle" alt="userimg"> <span>Hi, {{user.first_name}} {{user.last_name}}</span>
+                                </a>
+                                
+                            </div> {% endcomment %}
+                            <div class="user-footer"> <span class="text-light-black"></span> <a href="{% url 'login' %}">Login</a>
+                                    </div>
+
+                            {% endif %}
+                            
                             <!-- mobile search -->
                             <!-- user notification -->
                             <div class="cart-btn notification-btn">

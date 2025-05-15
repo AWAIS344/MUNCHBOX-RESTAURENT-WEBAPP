@@ -119,6 +119,8 @@
         </div>
     </section>
     <!-- Browse by category -->
+    {% if user.is_authenticated%}
+    
  <!-- your previous order -->
     <section class="recent-order section-padding">
         <div class="container">
@@ -195,6 +197,7 @@
             </div>
         </div>
     </section>
+    {% endif %}
     <!-- your previous order -->
     <div class="container">
         <!-- advertisement banner-->
