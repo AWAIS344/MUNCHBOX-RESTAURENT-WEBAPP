@@ -46,3 +46,8 @@ def login_view(request):
 
     context = {"form": form}
     return render(request, "accounts/login.html", context)
+
+
+def auth_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("home"))
