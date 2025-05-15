@@ -11,27 +11,41 @@ import re
 
 User = get_user_model()
 
-class RegistartionForm(UserCreationForm):
-
-    first_name = forms.CharField(required=True, widget=forms.TextInput(attrs={"class":"form-control","placeholder":"e.g Awais"}))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"e.g Ali"}))
-    email  = forms.EmailField(widget=forms.EmailInput(attrs={"class":"form-control","placeholder":"xyz123@gmail.com"}))
-    password1=forms.CharField( widget=forms.PasswordInput(attrs={"placeholder":"e.g ********" , "class":"form-control"}))
-    password2=forms.CharField(widget=forms.PasswordInput(attrs={"placeholder":"e.g ********" , "class":"form-control"}))
+class RegistrationForm(UserCreationForm):
+    first_name = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "e.g Awais"})
+    )
+    last_name = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "e.g Ali"})
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={"class": "form-control", "placeholder": "xyz123@gmail.com"})
+    )
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "e.g ********", "class": "form-control"})
+    )
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "e.g ********", "class": "form-control"})
+    )
+    city = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "e.g Karachi"})
+    )
 
     class Meta:
         model = User
-        fields = ["username","first_name","last_name","email"]
-        widgets={
-            "username":forms.TextInput(attrs={"placeholder":"e.g awais8900" , "class":"form-control"}),
+        fields = ["username", "first_name", "last_name", "email", "city"]
+        widgets = {
+            "username": forms.TextInput(attrs={"placeholder": "e.g awais8900", "class": "form-control"}),
         }
-    
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Email already exists")
         return email
-    
+
     def clean(self):
         cleaned_data = super().clean()
         password1 = cleaned_data.get("password1")

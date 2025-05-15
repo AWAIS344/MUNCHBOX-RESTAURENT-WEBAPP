@@ -3,21 +3,26 @@ from django.urls import reverse
 from django.contrib.auth import login
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login,authenticate,logout
-from .form import RegistartionForm,LoginForm
+from .form import RegistrationForm,LoginForm
 from django.contrib.auth.models import User
+from core.models import Profile
 
 # Create your views here.
 def register(request):
     if request.method == "POST":
-        form = RegistartionForm(request.POST)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
             user=form.save()
+            Profile.objects.create(
+                user=user,
+                city=form.cleaned_data.get('city')
+            )
             login(request, user)
             return HttpResponseRedirect(reverse("home"))
         else:
             print("Form is not valid")
     else:
-        form = RegistartionForm()
+        form = RegistrationForm()
     return render(request, "accounts/registration.html", {"form": form})
 
 def login_view(request):

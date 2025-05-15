@@ -13,14 +13,21 @@
                     <div class="col-lg-6">
                         <div class="content-wrapper bg-white padding-20">
                             <div class="content-box padding-tb-10">
-                                <h2 class="text-light-black fw-700">Find New York City restaurants near you and order online for free.</h2>
+                                {% if user.is_authenticated %}
+                                 <h2 class="text-light-black fw-700">Find New {{user.profile.city}} restaurants near you and order online for free.</h2>
+                                {% else %}
+                                
+                                 <h2 class="text-light-black fw-700">Want to see restaurants near you? Log in or enable location to get started!</h2>
+
+                                {% endif %}
+                               
                                 <label class="text-light-black fw-700">Find a location near you</label>
                                 <div class="input-group row">
                                     <div class="input-group2 col-xl-8">
                                         <input type="search" class="form-control form-control-submit" placeholder="Enter street address or zip code" value="1246 57th St, Brooklyn, NY, 11219">
                                         <div class="input-group-prepend">
                                             <button class="input-group-text text-light-green"><i class="fab fa-telegram-plane"></i>
-                      </button>
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="input-group-append col-xl-4">
