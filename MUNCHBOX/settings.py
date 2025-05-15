@@ -52,10 +52,7 @@ INSTALLED_APPS = [
     "home",
 ]
 
-AUTHENTICATION_BACKENDS = [
-    'accounts.backends.EmailBackend',  # replace with your actual app name
-
-]
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 
 MIDDLEWARE = [

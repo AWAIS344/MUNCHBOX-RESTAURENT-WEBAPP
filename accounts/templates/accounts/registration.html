@@ -32,17 +32,13 @@ Registration
                     {{ form.non_field_errors }}
 
                     {% if form.errors %}
-    <div class="alert alert-danger">
-        <strong>Form has errors:</strong>
-        <ul>
-        {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-                <li>{{ field }}: {{ error }}</li>
-            {% endfor %}
+        <p style="color: red;">{{ form.non_field_errors }}</p>
+        {% for field in form %}
+            {% if field.errors %}
+                <p style="color: red;">{{ field.label }}: {{ field.errors }}</p>
+            {% endif %}
         {% endfor %}
-        </ul>
-    </div>
-{% endif %}
+    {% endif %}
 
                   <h4 class="text-light-black fw-600">Create your account</h4>
                   <div class="row">

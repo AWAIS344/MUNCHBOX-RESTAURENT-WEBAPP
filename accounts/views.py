@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login,authenticate,logout
 from .form import RegistartionForm,LoginForm
@@ -12,7 +12,7 @@ def register(request):
         form = RegistartionForm(request.POST)
         if form.is_valid():
             user=form.save()
-            # login(request, user)
+            login(request, user)
             return HttpResponseRedirect(reverse("home"))
         else:
             print("Form is not valid")
@@ -27,16 +27,20 @@ def login_view(request):
         return HttpResponseRedirect(home)
 
     if request.method == 'POST':
+        print("Form data:", request.POST)  # Debug form input
         form = LoginForm(request=request, data=request.POST)
         if form.is_valid():
-            user = form.get_user()  # Use AuthenticationForm's built-in authentication
+            username=form.cleaned_data['username']
+            password=form.cleaned_data["password"]
+            user=authenticate(username=username,password=password)
             if user is not None:
-                login(request, user, backend='accounts.backends.EmailBackend')
-                return HttpResponseRedirect(home)
+                    login(request,user)
+                    
+                    return HttpResponseRedirect(home)
             else:
-                form.add_error(None, "Invalid email or password.")
+                print("Authentication failed: user is None")
         else:
-            form.add_error(None, "Invalid email or password.")
+            print("Form errors:", form.errors)
     else:
         form = LoginForm()
 

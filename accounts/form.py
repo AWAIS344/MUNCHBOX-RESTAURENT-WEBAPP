@@ -54,16 +54,14 @@ class RegistartionForm(UserCreationForm):
 
         return cleaned_data
     
-
-
 class LoginForm(AuthenticationForm):
-    username = forms.EmailField(
-        widget=forms.EmailInput(attrs={
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={
             "class": "form-control",
-            "placeholder": "you@example.com",
+            "placeholder": "Enter username",
             "autofocus": True
         }),
-        label="Email"
+        label="Username"
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
