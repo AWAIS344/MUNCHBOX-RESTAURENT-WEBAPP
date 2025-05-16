@@ -1,4 +1,5 @@
 from django.urls import path
+from .views import register,login_view,auth_logout
 from .api import RegisterAPIView, LoginAPIView, LogoutAPIView
 
 urlpatterns = [
