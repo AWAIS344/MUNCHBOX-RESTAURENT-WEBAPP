@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from core.models import Profile
 import re
 
-# Registration Serializer
+
 class RegistrationSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=False, allow_blank=True)
@@ -30,11 +30,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         password1 = data.get('password1')
         password2 = data.get('password2')
 
-        # Check if passwords match
+  
         if password1 != password2:
             raise serializers.ValidationError({"password2": "Passwords do not match."})
 
-        # Password strength validation
+
         if len(password1) < 8:
             raise serializers.ValidationError({"password1": "Password must be at least 8 characters long."})
         if not re.search(r"\d", password1):
