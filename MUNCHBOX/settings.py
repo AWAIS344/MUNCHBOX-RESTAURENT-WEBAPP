@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     "blog",
     "core",
     "home",
+    "ExDeals",
+    "AboutUs",
 ]
 
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
