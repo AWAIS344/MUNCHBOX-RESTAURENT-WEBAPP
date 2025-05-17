@@ -4,6 +4,17 @@
 Login
 {% endblock title %}
 {% block content %}
+
+{% if messages %}
+      <div class="alert-container">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
   <div class="inner-wrapper">
     <div class="container-fluid no-padding">
       <div class="row no-gutters overflow-auto">

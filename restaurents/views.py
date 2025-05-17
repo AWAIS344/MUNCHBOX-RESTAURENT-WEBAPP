@@ -10,10 +10,6 @@ def AddRestaurent(request):
     context={}
     return render(request,"restaurents/add_restaurent.html",context)
 
-def RestaurentDeals(request):
-    context={}
-    return render(request,"restaurents/ex_deals.html",context)
-
 def RestaurentList(request):
     context={}
     return render(request,"restaurents/listview.html",context)

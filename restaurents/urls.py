@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RestaurentHome,AddRestaurent,RestaurentDeals,RestaurentList
+from .views import RestaurentHome,AddRestaurent,RestaurentList
 
 urlpatterns = [
 

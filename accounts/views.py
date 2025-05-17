@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login,authenticate,logout
@@ -29,7 +30,9 @@ def login_view(request):
     home = reverse("home")
 
     if request.user.is_authenticated:
+        messages.info(request, "You are already logged in.")
         return HttpResponseRedirect(home)
+
 
     if request.method == 'POST':
         print("Form data:", request.POST)  # Debug form input
