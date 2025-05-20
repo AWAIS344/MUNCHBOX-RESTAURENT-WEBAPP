@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('AboutUs.urls')),
     path('', include('blog.urls')),
     path('', include('home.urls')),
+    path('', include('Geolocator.urls')),
     path('', include('restaurents.urls')),
 
 
