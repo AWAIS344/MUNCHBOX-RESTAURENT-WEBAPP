@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .forms import AddRestaurentForm
 
 # Create your views here.
 def RestaurentHome(request):
@@ -7,7 +8,9 @@ def RestaurentHome(request):
     return render(request,"restaurents/restaurent.html",context)
 
 def AddRestaurent(request):
-    context={}
+    form = AddRestaurentForm()
+
+    context={"form":form}
     return render(request,"restaurents/add_restaurent.html",context)
 
 def RestaurentList(request):
