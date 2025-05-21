@@ -7,6 +7,7 @@ class AddRestaurentForm(forms.ModelForm):
         model = Restaurant
         fields = '__all__'
 
+
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Restaurant Name'}),
             'phone': forms.TextInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Phone Number'}),

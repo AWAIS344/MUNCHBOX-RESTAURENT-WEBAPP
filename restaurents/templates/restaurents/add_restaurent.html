@@ -76,25 +76,25 @@ ADD RESTAURENT
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="text-light-black fw-700">Restaurant phone</label>
-                                                                <input type="text" name="#" class="form-control form-control-submit" placeholder="i.e +1 321 828 6662">
+                                                                {{form.phone}}
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="text-light-black fw-700">Manager Name</label>
-                                                                <input type="text" name="#" class="form-control form-control-submit" placeholder="i.e Alard Willaim">
+                                                                {{form.manager_name}}
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="text-light-black fw-700">Manager Contact phone</label>
-                                                                <input type="text" name="#" class="form-control form-control-submit" placeholder="i.e +1 321 828 6662">
+                                                                {{form.manager_phone}}
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="form-group">
                                                                 <label class="text-light-black fw-700">Contact Email</label>
-                                                                <input type="email" name="#" class="form-control form-control-submit" placeholder="i.e alard@example.com ">
+                                                                {{form.contact_email}}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -109,19 +109,9 @@ ADD RESTAURENT
                                                         </div>
                                                         <div class="col-12">
                                                             <div class="form-group">
-                                                                <label class="text-light-black fw-700">Country <sup class="fs-16">*</sup>
-                                                                </label>
-                                                                <select class="form-control form-control-submit custom-select-2 full-width">
-                                                                    <option value="">Select Country</option>
-                                                                    <option value="brazil" data-name="">Brazil</option>
-                                                                    <option value="canada" data-name="">Canada</option>
-                                                                    <option value="france" data-name="">France</option>
-                                                                    <option value="india" data-name="">India</option>
-                                                                    <option value="italy" data-name="">Italy</option>
-                                                                    <option value="spain" data-name="">Spain</option>
-                                                                    <option value="united-kingdom" data-name="">United Kingdom</option>
-                                                                    <option value="united-states" data-name="">United States</option>
-                                                                </select>
+                                                                <label class="text-light-black fw-700">Country</label>
+                                                                {{form.country}}
+                                                                
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
