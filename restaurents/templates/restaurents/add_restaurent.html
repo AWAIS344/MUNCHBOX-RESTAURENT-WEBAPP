@@ -167,13 +167,9 @@ ADD RESTAURENT
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <div class="form-group">
-                                                                <label class="text-light-black fw-700">Delivery/Pickup</label>
-                                                                <select class="form-control form-control-submit custom-select-2 full-width">
-                                                                    <option value="delivery">Delivery</option>
-                                                                    <option value="pickup">Pickup</option>
-                                                                    <option value="delivery_and_pickup">Delivery &amp; Pickup</option>
-                                                                </select>
-                                                            </div>
+    <label class="text-light-black fw-700" for="{{ form.delivery_pickup.id_for_label }}">Delivery/Pickup</label>
+    {{ form.delivery_pickup }}
+</div>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="form-group">
