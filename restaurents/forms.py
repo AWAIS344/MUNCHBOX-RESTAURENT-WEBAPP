@@ -1,6 +1,6 @@
 # from django.forms import ModelForm
 from django import forms
-from core.models import Restaurant
+from core.models import Restaurant,Package
 
 class AddRestaurentForm(forms.ModelForm):
     class Meta:
@@ -24,3 +24,8 @@ class AddRestaurentForm(forms.ModelForm):
             'owner': forms.Select(attrs={'class': 'form-control form-control-submit'}),
             'package': forms.Select(attrs={'class': 'form-control form-control-submit'}),
         }
+
+class Package_form(forms.ModelForm):
+    class Meta:
+        model = Package
+        fields = '__all__'

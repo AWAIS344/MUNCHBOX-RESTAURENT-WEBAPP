@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .forms import AddRestaurentForm
+from .forms import AddRestaurentForm,Package
+from core.models import Package
 
 # Create your views here.
 def RestaurentHome(request):
@@ -9,8 +10,9 @@ def RestaurentHome(request):
 
 def AddRestaurent(request):
     form = AddRestaurentForm()
+    package=Package.objects.all()
 
-    context={"form":form}
+    context={"form":form,"package":package}
     return render(request,"restaurents/add_restaurent.html",context)
 
 def RestaurentList(request):
