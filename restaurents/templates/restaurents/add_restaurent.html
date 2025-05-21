@@ -218,7 +218,7 @@ ADD RESTAURENT
                                         <div class="step-tab-panel" id="steppanel2">
                                             <div class="package-sec">
                                                 <div class="row">
-                                                    <div class="col-xl-6 col-lg-12 col-md-6">
+                                                    {% comment %} <div class="col-xl-6 col-lg-12 col-md-6">
                                                         <div class="package-box main-box mb-lg-20">
                                                             <div class="package-img">
                                                                 <a href="#">
@@ -245,42 +245,35 @@ ADD RESTAURENT
                                                                 <div class="package-btn"> <a href="#" class="btn-second btn-submit full-width">Choose Plan</a>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> {% endcomment %}
                                                     </div>
+                                                    {% for pkg  in package %}
                                                     <div class="col-xl-6 col-lg-12 col-md-6">
                                                         <div class="package-box main-box">
                                                             <div class="package-img">
                                                                 <a href="#">
-                                                                    <img src="assets/img/package/package-2.jpg" class="img-fluid full-width" alt="package image">
+                                                                    <img src="{{pkg.image.url}}" class="img-fluid full-width" alt="package image">
                                                                 </a>
                                                             </div>
-                                                            {% for pkg  in package %}
+                                                            
                                                             
                                                             <div class="package-caption padding-20 bg-black">
                                                                 <div class="package-item-first">
                                                                     <div class="pack-type fs-18 text-custom-white">{{pkg.name}}</div>
-                                                                    <div class="pack-type fs-18 text-light-green">$ 35</div>
+                                                                    <div class="pack-type fs-18 text-light-green">$ {{pkg.price}}</div>
                                                                 </div>
                                                                 <ul>
-                                                                    <li class="text-custom-white"><span>{{pkg.duration}} days</span>
-                                                                    </li>
-                                                                    {% comment %} <li class="text-custom-white"><span>2 dip free (with every meal)</span>
-                                                                    </li>
-                                                                    <li class="text-custom-white"><span>3 Soft drinks</span>
-                                                                    </li>
-                                                                    <li class="text-custom-white"><span>Unlimited order</span>
-                                                                    </li>
-                                                                    <li class="text-custom-white"><span>Free delivery</span>
-                                                                    </li> {% endcomment %}
-
-                                                                    
-                                                                </ul>
+  {% for line in pkg.description.splitlines %}
+    <li class="text-custom-white">{{ line }}</li>
+  {% endfor %}
+</ul>
                                                                 <div class="package-btn"> <a href="#" class="btn-second btn-submit full-width">Choose Plan</a>
                                                                 </div>
                                                             </div>
-                                                            {% endfor %}
+                                                            
                                                         </div>
                                                     </div>
+                                                    {% endfor %}
                                                 </div>
                                             </div>
                                         </div>
