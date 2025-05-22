@@ -106,6 +106,16 @@ class GiftCard(models.Model):
         return f"Gift Card - {self.code}"
     
     
+class PromoCode(models.Model):
+    code = models.CharField(max_length=20, unique=True)
+    is_valid = models.BooleanField(default=True)
+    discount = models.DecimalField(max_digits=5, decimal_places=2)
+    expiry_date = models.DateTimeField()
+
+    def __str__(self):
+        return f"Promo Code - {self.code}"
+    
+    
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
