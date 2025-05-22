@@ -78,16 +78,25 @@ class Address(models.Model):
 
 class PaymentMethod(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payment_methods')
-    type = models.CharField(max_length=20, choices=[('credit_card', 'Credit Card'), ('paypal', 'PayPal')])
-    brand = models.CharField(max_length=20, blank=True, choices=[('visa', 'Visa'), ('mastercard', 'MasterCard'), ('amex', 'American Express'), ('discover', 'Discover')])
+    method = models.CharField(max_length=20, choices=[
+        ('credit_card', 'Credit Card'),
+        ('paypal', 'PayPal'),
+        ('amex_express', 'Amex Express Checkout')
+    ])
+    brand = models.CharField(max_length=20, blank=True, choices=[
+        ('visa', 'Visa'), ('mastercard', 'MasterCard'), ('amex', 'American Express'), ('discover', 'Discover')
+    ])
     last_4 = models.CharField(max_length=4, blank=True)
     exp_month = models.IntegerField(blank=True, null=True)
     exp_year = models.IntegerField(blank=True, null=True)
     paypal_email = models.EmailField(blank=True)
     token = models.CharField(max_length=100, blank=True)  # Token from payment gateway
+    is_default = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.get_type_display()} - {self.user.username}"
+        return f"{self.get_method_display()} - {self.user.username}"
+    
+    
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
