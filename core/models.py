@@ -115,6 +115,27 @@ class PromoCode(models.Model):
     def __str__(self):
         return f"Promo Code - {self.code}"
     
+
+class OrderPayment(models.Model):
+    order = models.ForeignKey('Order', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, blank=True)
+    gift_card = models.ForeignKey(GiftCard, on_delete=models.SET_NULL, null=True, blank=True)
+    promo_code = models.ForeignKey(PromoCode, on_delete=models.SET_NULL, null=True, blank=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_type = models.CharField(max_length=20, choices=[
+        ('credit_card', 'Credit Card'),
+        ('paypal', 'PayPal'),
+        ('amex_express', 'Amex Express Checkout'),
+        ('cash', 'Cash'),
+        ('gift_card', 'Gift Card'),
+        ('promo_code', 'Promo Code')
+    ])
+    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed'), ('failed', 'Failed')])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Payment for Order {self.order.id} - {self.get_payment_type_display()}"
     
 
 class Order(models.Model):
