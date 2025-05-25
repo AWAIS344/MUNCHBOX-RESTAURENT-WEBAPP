@@ -61,7 +61,9 @@ ADD RESTAURENT
                                     <div class="step-content">
                                         <div class="step-tab-panel active" id="steppanel1">
                                             <div class="general-sec">
-                                                <form>
+                                                <form  method = "POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="step" value="1">
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <h5 class="text-light-black fw-700">General Information</h5>
@@ -167,9 +169,9 @@ ADD RESTAURENT
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <div class="form-group">
-    <label class="text-light-black fw-700" for="{{ form.delivery_pickup.id_for_label }}">Delivery/Pickup</label>
-    {{ form.delivery_pickup }}
-</div>
+                                                    <label class="text-light-black fw-700" for="{{ form.delivery_pickup.id_for_label }}">Delivery/Pickup</label>
+                                                    {{ form.delivery_pickup }}
+                                                            </div>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="form-group">
@@ -191,13 +193,13 @@ ADD RESTAURENT
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="text-light-black fw-700">Username</label>
-                                                               {{form.owner}}
+                                                               <p class="text-light-black">{{ current_user.username }}</p>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="text-light-black fw-700">Email</label>
-                                                                <input type="email" class="form-control form-control-submit" placeholder="Email I'D">
+                                                                <p class="text-light-black">{{ current_user.email }}</p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -212,6 +214,8 @@ ADD RESTAURENT
                                                                 <input type="checkbox" name="#"> <span class="checkmark"></span>By Registering You Confirm That You Accept The Terms & Conditions And Privacy Policy</label>
                                                         </div>
                                                     </div>
+
+                                                    <button  type="submit" class="btn-first white-btn" >Next</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -268,8 +272,12 @@ ADD RESTAURENT
     <li class="text-custom-white">{{ line }}</li>
   {% endfor %}
 </ul>
-                                                                <div class="package-btn"> <a href="#" class="btn-second btn-submit full-width">Choose Plan</a>
-                                                                </div>
+                                                                <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="step" value="2">
+    <input type="hidden" name="package_id" value="{{ pkg.id }}">
+    <button type="submit" class="btn-second btn-submit full-width">Choose Plan</button>
+</form>
                                                             </div>
                                                             
                                                         </div>
