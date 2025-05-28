@@ -1,0 +1,15 @@
+<!-- restaurents/restaurant_preview.html -->
+{% extends "core/base.html" %}
+{% block content %}
+    <h1>Restaurant Preview</h1>
+    <p><strong>Name:</strong> {{ restaurant.name }}</p>
+    <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
+    <p><strong>Manager:</strong> {{ restaurant.manager_name }} ({{ restaurant.manager_phone }})</p>
+    <p><strong>Email:</strong> {{ restaurant.contact_email }}</p>
+    <p><strong>Location:</strong> {{ restaurant.city }}, {{ restaurant.state }}, {{ restaurant.country }}</p>
+    <p><strong>Coordinates:</strong> ({{ restaurant.latitude }}, {{ restaurant.longitude }})</p>
+    <p><strong>Delivery/Pickup:</strong> {{ restaurant.delivery_pickup }}</p>
+    <p><strong>Cuisines:</strong> {% for cuisine in restaurant.cuisines.all %}{{ cuisine.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    <p><strong>Package:</strong> {{ restaurant.package.name }} ({{ restaurant.package.price }})</p>
+    <a href="{% url 'add_rest' %}" class="btn btn-primary">Add Another Restaurant</a>
+{% endblock %}

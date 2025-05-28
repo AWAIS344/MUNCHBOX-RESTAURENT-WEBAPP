@@ -1,6 +1,6 @@
 # core/serializers.py
 from rest_framework import serializers
-from .models import Restaurant, Package, Cuisine
+from core.models import Restaurant, Package, Cuisine
 
 class CuisineSerializer(serializers.ModelSerializer):
     class Meta:

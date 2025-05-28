@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .forms import AddRestaurentForm,Package
 from core.models import Package
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -13,10 +14,9 @@ from django.contrib import messages
 
 
 # Create your views here.
-def RestaurentHome(request):
-    context={}
-
-    return render(request,'restaurents/add_restaurent.html',context)
+def RestaurentHome(request,restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id, owner=request.user)
+    return render(request, 'restaurents/restaurant_preview.html', {'restaurant': restaurant})
 
 @login_required
 def AddRestaurent(request):
@@ -131,14 +131,10 @@ def AddRestaurent(request):
 class RestaurantListCreateAPIView(generics.ListCreateAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
-
-# Preview View
-def restaurant_preview(request, restaurant_id):
-    restaurant = get_object_or_404(Restaurant, id=restaurant_id, owner=request.user)
-    return render(request, 'restaurents/restaurant_preview.html', {'restaurant': restaurant})
 
 def RestaurentList(request):
     context={}
