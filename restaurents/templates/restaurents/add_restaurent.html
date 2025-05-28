@@ -214,44 +214,12 @@ ADD RESTAURENT
                                                                 <input type="checkbox" name="#"> <span class="checkmark"></span>By Registering You Confirm That You Accept The Terms & Conditions And Privacy Policy</label>
                                                         </div>
                                                     </div>
-
-                                                    <button  type="submit" class="btn-first white-btn" >Next</button>
                                                 </form>
                                             </div>
                                         </div>
                                         <div class="step-tab-panel" id="steppanel2">
                                             <div class="package-sec">
                                                 <div class="row">
-                                                    {% comment %} <div class="col-xl-6 col-lg-12 col-md-6">
-                                                        <div class="package-box main-box mb-lg-20">
-                                                            <div class="package-img">
-                                                                <a href="#">
-                                                                    <img src="assets/img/package/package-1.jpg" class="img-fluid full-width" alt="package image">
-                                                                </a>
-                                                            </div>
-                                                            <div class="package-caption padding-20 bg-black">
-                                                                <div class="package-item-first">
-                                                                    <div class="pack-type fs-18 text-custom-white">Silver Package</div>
-                                                                    <div class="pack-type fs-18 text-light-green">$ 18</div>
-                                                                </div>
-                                                                <ul>
-                                                                    <li class="text-custom-white"><span>10 days</span>
-                                                                    </li>
-                                                                    <li class="text-custom-white"><span>1 dip free (with every meal)</span>
-                                                                    </li>
-                                                                    <li class="text-custom-white"><span>1 Soft drinks</span>
-                                                                    </li>
-                                                                    <li class="text-custom-white"><span>Unlimited order</span>
-                                                                    </li>
-                                                                    <li class="text-custom-white"><span>Free delivery</span>
-                                                                    </li>
-                                                                </ul>
-                                                                <div class="package-btn"> <a href="#" class="btn-second btn-submit full-width">Choose Plan</a>
-                                                                </div>
-                                                            </div>
-                                                        </div> 
-                                                    </div>
-                                                    {% endcomment %}
                                                     {% for pkg  in package %}
                                                     <div class="col-xl-6 col-lg-12 col-md-6">
                                                         <div class="package-box main-box">
@@ -746,8 +714,21 @@ ADD RESTAURENT
         </div>
     </section>
 
+
 {% endblock content %}
 
 {% block footer %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentStep = '{{ current_step }}';
+        const steps = ['steppanel1', 'steppanel2', 'steppanel3', 'steppanel4'];
+        steps.forEach(step => document.getElementById(step).classList.remove('active'));
+        document.getElementById(`steppanel${currentStep}`).classList.add('active');
+
+        document.querySelectorAll('.stepbtn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`step${currentStep}`).classList.add('active');
+    });
+</script>
 
 {% endblock footer %}

@@ -1,13 +1,11 @@
-# from django.forms import ModelForm
+# core/forms.py
 from django import forms
-from core.models import Restaurant,Package
+from core.models import Restaurant, Package
 
 class AddRestaurentForm(forms.ModelForm):
     class Meta:
         model = Restaurant
-        # fields = '__all__'
         exclude = ["owner"]
-
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Restaurant Name'}),
@@ -22,7 +20,6 @@ class AddRestaurentForm(forms.ModelForm):
             'longitude': forms.NumberInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Longitude'}),
             'delivery_pickup': forms.Select(attrs={'class': 'form-control form-control-submit'}),
             'cuisines': forms.SelectMultiple(attrs={'class': 'form-control form-control-submit'}),
-            # 'owner': forms.Select(attrs={'class': 'form-control form-control-submit'}),
             'package': forms.Select(attrs={'class': 'form-control form-control-submit'}),
         }
 
