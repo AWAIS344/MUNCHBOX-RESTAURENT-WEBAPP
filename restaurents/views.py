@@ -16,7 +16,7 @@ from django.contrib import messages
 # Create your views here.
 def RestaurentHome(request,restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id, owner=request.user)
-    return render(request, 'restaurents/restaurant_preview.html', {'restaurant': restaurant})
+    return render(request, 'restaurents/restaurant.html', {'restaurant': restaurant})
 
 @login_required
 def AddRestaurent(request):
@@ -31,9 +31,9 @@ def AddRestaurent(request):
     if request.method == 'POST':
         step = request.POST.get('step', '1')
 
-        if step == '1':  # General Info
+        if step == '1':  
             if form.is_valid():
-                # Convert cuisines to a list of IDs for session storage
+             
                 cleaned_data = form.cleaned_data.copy()
                 cleaned_data['cuisines'] = [cuisine.id for cuisine in form.cleaned_data['cuisines']]
                 request.session['restaurant_form_data'] = cleaned_data
@@ -48,7 +48,7 @@ def AddRestaurent(request):
                 messages.error(request, 'Please correct the errors in the form.')
                 current_step = '1'
 
-        elif step == '2':  # Select Package
+        elif step == '2': 
             package_id = request.POST.get('package_id')
             if package_id:
                 try:

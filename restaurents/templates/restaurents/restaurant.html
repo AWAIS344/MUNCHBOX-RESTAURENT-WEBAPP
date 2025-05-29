@@ -35,7 +35,7 @@ Restaurent
             <div class="row">
                 <div class="col-md-12">
                     <div class="heading padding-tb-10">
-                        <h3 class="text-light-black title fw-700 no-margin">Great Burger</h3>
+                        <h3 class="text-light-black title fw-700 no-margin"> {{restaurant.name}}</h3>
                         <p class="text-light-black sub-title no-margin">4508 Fort Hamilton Pkwy <span><a href="checkout.html" class="text-success">Change locations</a></span>
                         </p>
                         <div class="head-rating">
@@ -1098,7 +1098,7 @@ Restaurent
                             <span><a href="tel:" class="text-light-white">(347) 123456789</a></span>
                         </li>
                         <li> <i class="far fa-envelope"></i>
-                            <span><a href="mailto:" class="text-light-white">demo@domain.com</a></span>
+                            <span><a href="mailto:" class="text-light-white">d{{restaurant.contact_email}}</a></span>
                         </li>
                     </ul>
                     <ul class="social-media pt-2">
