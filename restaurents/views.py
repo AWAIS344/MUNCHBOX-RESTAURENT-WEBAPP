@@ -25,21 +25,24 @@ def AddRestaurent(request):
     """
     packages = Package.objects.all()
     form_data = request.session.get('restaurant_form_data', {})
-    form = AddRestaurentForm(request.POST or form_data)
     current_step = request.session.get('current_step', '1')
+    
+    # Initialize form with session data if available
+    form = AddRestaurentForm(form_data or None)
 
     if request.method == 'POST':
         step = request.POST.get('step', '1')
 
-        if step == '1':  
+        if step == '1':  # General Info
+            form = AddRestaurentForm(request.POST)
             if form.is_valid():
-             
+                # Store form data in session
                 cleaned_data = form.cleaned_data.copy()
                 cleaned_data['cuisines'] = [cuisine.id for cuisine in form.cleaned_data['cuisines']]
                 request.session['restaurant_form_data'] = cleaned_data
                 request.session['current_step'] = '2'
                 return render(request, 'restaurents/add_restaurent.html', {
-                    'form': AddRestaurentForm(),
+                    'form': form,  # Pass the form with data
                     'package': packages,
                     'current_step': '2',
                     'current_user': request.user
@@ -48,7 +51,7 @@ def AddRestaurent(request):
                 messages.error(request, 'Please correct the errors in the form.')
                 current_step = '1'
 
-        elif step == '2': 
+        elif step == '2':  # Select Package
             package_id = request.POST.get('package_id')
             if package_id:
                 try:
@@ -56,7 +59,7 @@ def AddRestaurent(request):
                     request.session['selected_package'] = package_id
                     request.session['current_step'] = '3'
                     return render(request, 'restaurents/add_restaurent.html', {
-                        'form': AddRestaurentForm(),
+                        'form': form,
                         'package': packages,
                         'current_step': '3',
                         'current_user': request.user
@@ -68,31 +71,21 @@ def AddRestaurent(request):
             current_step = '2'
 
         elif step == '3':  # Payment
-            form_data = request.session.get('restaurant_form_data')
-            if form_data:
-                form = AddRestaurentForm(form_data)
-                if form.is_valid():
-                    request.session['current_step'] = '4'
-                    return render(request, 'restaurents/add_restaurent.html', {
-                        'form': AddRestaurentForm(),
-                        'package': packages,
-                        'current_step': '4',
-                        'current_user': request.user
-                    })
-                else:
-                    messages.error(request, 'Invalid form data. Please start over.')
-                    current_step = '1'
-            else:
-                messages.error(request, 'No form data found. Please start over.')
-                current_step = '1'
+            # For simplicity, assume payment is confirmed (integrate payment gateway here if needed)
+            request.session['current_step'] = '4'
+            return render(request, 'restaurents/add_restaurent.html', {
+                'form': form,
+                'package': packages,
+                'current_step': '4',
+                'current_user': request.user
+            })
 
         elif step == '4':  # Save & Preview
             form_data = request.session.get('restaurant_form_data')
             package_id = request.session.get('selected_package')
             if form_data and package_id:
-                # Reconstruct form data for saving
                 form_data_copy = form_data.copy()
-                cuisines_ids = form_data_copy.pop('cuisines')
+                cuisines_ids = form_data_copy.pop('cuisines', [])
                 form = AddRestaurentForm(form_data_copy)
                 if form.is_valid():
                     restaurant = form.save(commit=False)
@@ -121,7 +114,7 @@ def AddRestaurent(request):
             current_step = '1'
 
     return render(request, 'restaurents/add_restaurent.html', {
-        'form': AddRestaurentForm(),
+        'form': form,
         'package': packages,
         'current_step': current_step,
         'current_user': request.user

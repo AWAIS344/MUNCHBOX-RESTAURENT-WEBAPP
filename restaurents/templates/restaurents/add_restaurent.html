@@ -718,17 +718,35 @@ ADD RESTAURENT
 {% endblock content %}
 
 {% block footer %}
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const currentStep = '{{ current_step }}';
         const steps = ['steppanel1', 'steppanel2', 'steppanel3', 'steppanel4'];
+        const stepButtons = ['step1', 'step2', 'step3', 'step4'];
+        
+        // Update active step panel
         steps.forEach(step => document.getElementById(step).classList.remove('active'));
         document.getElementById(`steppanel${currentStep}`).classList.add('active');
 
-        document.querySelectorAll('.stepbtn').forEach(btn => btn.classList.remove('active'));
+        // Update active step button
+        stepButtons.forEach(btn => document.getElementById(btn).classList.remove('active'));
         document.getElementById(`step${currentStep}`).classList.add('active');
+
+        // Handle Next/Previous button clicks
+        document.querySelectorAll('.btn-first').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const step = this.id.split('-')[1];
+                const form = document.querySelector(`#steppanel${step} form`) || document.querySelector('form');
+                if (form) {
+                    const hiddenStep = form.querySelector('input[name="step"]');
+                    if (hiddenStep) {
+                        hiddenStep.value = step;
+                    }
+                    form.submit();
+                }
+            });
+        });
     });
 </script>
-
 {% endblock footer %}
