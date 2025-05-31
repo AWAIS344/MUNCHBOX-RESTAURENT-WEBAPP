@@ -156,3 +156,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
 }
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Or 'cached_db' for performance
+SESSION_COOKIE_AGE = 1209600

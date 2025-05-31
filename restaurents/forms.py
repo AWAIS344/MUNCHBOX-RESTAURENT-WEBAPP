@@ -1,8 +1,13 @@
-# core/forms.py
 from django import forms
-from core.models import Restaurant, Package
+from core.models import Restaurant, Package, Cuisine
 
 class AddRestaurentForm(forms.ModelForm):
+    terms_accepted = forms.BooleanField(
+        required=True,
+        label="Accept terms",
+        widget=forms.CheckboxInput(attrs={'class': 'custom-checkbox'})
+    )
+
     class Meta:
         model = Restaurant
         exclude = ["owner"]
@@ -18,12 +23,17 @@ class AddRestaurentForm(forms.ModelForm):
             'city': forms.TextInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'City'}),
             'latitude': forms.NumberInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Latitude'}),
             'longitude': forms.NumberInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Longitude'}),
-            'delivery_pickup': forms.Select(attrs={'class': 'form-control form-control-submit'}),
+            'address': forms.TextInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Type Your Address'}),
+            'delivery_pickup': forms.Select(
+                attrs={'class': 'form-control form-control-submit'},
+                choices=[('', 'Select Option'), ('delivery', 'Delivery'), ('pickup', 'Pickup'), ('both', 'Delivery & Pickup')]
+            ),
             'cuisines': forms.SelectMultiple(attrs={'class': 'form-control form-control-submit'}),
             'package': forms.Select(attrs={'class': 'form-control form-control-submit'}),
         }
 
-class Package_form(forms.ModelForm):
-    class Meta:
-        model = Package
-        fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cuisines'].queryset = Cuisine.objects.all()
+        self.fields['package'].queryset = Package.objects.all()
+        self.fields['package'].required = False  # Package is set in Step 2
