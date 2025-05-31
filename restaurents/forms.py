@@ -10,7 +10,7 @@ class AddRestaurentForm(forms.ModelForm):
 
     class Meta:
         model = Restaurant
-        exclude = ["owner"]
+        exclude = ["owner", "package"]  # Exclude package as it's set in Step 2
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Restaurant Name'}),
@@ -24,16 +24,11 @@ class AddRestaurentForm(forms.ModelForm):
             'latitude': forms.NumberInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Latitude'}),
             'longitude': forms.NumberInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Longitude'}),
             'address': forms.TextInput(attrs={'class': 'form-control form-control-submit', 'placeholder': 'Type Your Address'}),
-            'delivery_pickup': forms.Select(
-                attrs={'class': 'form-control form-control-submit'},
-                choices=[('', 'Select Option'), ('delivery', 'Delivery'), ('pickup', 'Pickup'), ('both', 'Delivery & Pickup')]
-            ),
+            'delivery_pickup': forms.Select(attrs={'class': 'form-control form-control-submit'}),
             'cuisines': forms.SelectMultiple(attrs={'class': 'form-control form-control-submit'}),
-            'package': forms.Select(attrs={'class': 'form-control form-control-submit'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['cuisines'].queryset = Cuisine.objects.all()
-        self.fields['package'].queryset = Package.objects.all()
-        self.fields['package'].required = False  # Package is set in Step 2
+        self.fields['delivery_pickup'].choices = [('', 'Select Option')] + list(self.fields['delivery_pickup'].choices)
