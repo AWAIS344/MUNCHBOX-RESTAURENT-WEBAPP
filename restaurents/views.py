@@ -20,102 +20,111 @@ def RestaurentHome(request,restaurant_id):
 
 @login_required
 def AddRestaurent(request):
-    """
-    View to handle the multi-step restaurant registration process.
-    """
+    # Initialize form and packages
+    form_data = request.session.get('restaurant_data', {})
+    form = RestaurantForm(request.POST or form_data)
     packages = Package.objects.all()
-    form_data = request.session.get('restaurant_form_data', {})
+    
+    # Get or set current step
     current_step = request.session.get('current_step', '1')
     
-    # Initialize form with session data if available
-    form = AddRestaurentForm(form_data or None)
-
     if request.method == 'POST':
-        step = request.POST.get('step', '1')
-
-        if step == '1':  # General Info
-            form = AddRestaurentForm(request.POST)
+        step = request.POST.get('step')
+        
+        if step == '2' and current_step == '1':
             if form.is_valid():
-                # Store form data in session
-                cleaned_data = form.cleaned_data.copy()
-                cleaned_data['cuisines'] = [cuisine.id for cuisine in form.cleaned_data['cuisines']]
-                request.session['restaurant_form_data'] = cleaned_data
+                # Save form data to session
+                request.session['restaurant_data'] = form.cleaned_data
                 request.session['current_step'] = '2'
-                return render(request, 'restaurents/add_restaurent.html', {
-                    'form': form,  # Pass the form with data
-                    'package': packages,
+                request.session.modified = True
+                messages.success(request, "Step 1 completed successfully.")
+                return render(request, 'restaurents/add_restaurant.html', {
+                    'form': RestaurantForm(),  # Reset form for next steps
+                    'packages': packages,
                     'current_step': '2',
                     'current_user': request.user
                 })
             else:
-                messages.error(request, 'Please correct the errors in the form.')
+                messages.error(request, "Please correct the errors below.")
+                print(form.errors)  # Debug: Log form errors to console
                 current_step = '1'
-
-        elif step == '2':  # Select Package
+        
+        elif step == '3' and current_step == '2':
             package_id = request.POST.get('package_id')
             if package_id:
-                try:
-                    package = Package.objects.get(id=package_id)
-                    request.session['selected_package'] = package_id
-                    request.session['current_step'] = '3'
-                    return render(request, 'restaurents/add_restaurent.html', {
-                        'form': form,
-                        'package': packages,
-                        'current_step': '3',
-                        'current_user': request.user
-                    })
-                except Package.DoesNotExist:
-                    messages.error(request, 'Invalid package selected.')
+                request.session['package_id'] = package_id
+                request.session['current_step'] = '3'
+                request.session.modified = True
+                messages.success(request, "Package selected successfully.")
+                return render(request, 'restaurents/add_restaurant.html', {
+                    'form': RestaurantForm(),
+                    'packages': packages,
+                    'current_step': '3',
+                    'current_user': request.user
+                })
             else:
-                messages.error(request, 'Please select a package.')
-            current_step = '2'
-
-        elif step == '3':  # Payment
-            # For simplicity, assume payment is confirmed (integrate payment gateway here if needed)
+                messages.error(request, "Please select a package.")
+                current_step = '2'
+        
+        elif step == '4' and current_step == '3':
+            # Placeholder for payment processing
             request.session['current_step'] = '4'
-            return render(request, 'restaurents/add_restaurent.html', {
-                'form': form,
-                'package': packages,
+            request.session.modified = True
+            messages.success(request, "Payment step reached.")
+            return render(request, 'restaurents/add_restaurant.html', {
+                'form': RestaurantForm(),
+                'packages': packages,
                 'current_step': '4',
                 'current_user': request.user
             })
-
-        elif step == '4':  # Save & Preview
-            form_data = request.session.get('restaurant_form_data')
-            package_id = request.session.get('selected_package')
-            if form_data and package_id:
-                form_data_copy = form_data.copy()
-                cuisines_ids = form_data_copy.pop('cuisines', [])
-                form = AddRestaurentForm(form_data_copy)
-                if form.is_valid():
-                    restaurant = form.save(commit=False)
-                    restaurant.owner = request.user
-                    restaurant.package = Package.objects.get(id=package_id)
-                    restaurant.save()
-                    # Save cuisines (ManyToMany field)
-                    restaurant.cuisines.set(Cuisine.objects.filter(id__in=cuisines_ids))
-                    
+        
+        elif step == '4' and current_step == '4':
+            # Save restaurant to database
+            restaurant_data = request.session.get('restaurant_data', {})
+            package_id = request.session.get('package_id')
+            if restaurant_data and package_id:
+                try:
+                    restaurant = Restaurant.objects.create(
+                        name=restaurant_data.get('name'),
+                        phone=restaurant_data.get('phone'),
+                        manager_name=restaurant_data.get('manager_name'),
+                        manager_phone=restaurant_data.get('manager_phone'),
+                        contact_email=restaurant_data.get('contact_email'),
+                        country=restaurant_data.get('country'),
+                        state=restaurant_data.get('state'),
+                        city=restaurant_data.get('city'),
+                        latitude=restaurant_data.get('latitude'),
+                        longitude=restaurant_data.get('longitude'),
+                        address=restaurant_data.get('address'),
+                        delivery_pickup=restaurant_data.get('delivery_pickup'),
+                        cuisines=restaurant_data.get('cuisines'),
+                        user=request.user,
+                        package_id=package_id
+                    )
+                    messages.success(request, "Restaurant created successfully!")
                     # Clear session data
-                    request.session.pop('restaurant_form_data', None)
-                    request.session.pop('selected_package', None)
-                    request.session.pop('current_step', None)
-                    
-                    messages.success(request, 'Restaurant registered successfully!')
-                    return redirect('restaurant_preview', restaurant_id=restaurant.id)
-                else:
-                    messages.error(request, 'Invalid form data. Please start over.')
-                    current_step = '1'
+                    request.session.pop('restaurant_data', None)
+                    request.session.pop('package_id', None)
+                    request.session['current_step'] = '1'
+                    return redirect('restaurant_preview')  # Replace with your preview URL
+                except Exception as e:
+                    messages.error(request, f"Error creating restaurant: {str(e)}")
+                    current_step = '4'
             else:
-                messages.error(request, 'Incomplete data. Please start over.')
+                messages.error(request, "Incomplete data. Please start over.")
+                request.session['current_step'] = '1'
                 current_step = '1'
-
-        else:
-            messages.error(request, 'Invalid step.')
-            current_step = '1'
-
-    return render(request, 'restaurents/add_restaurent.html', {
+        
+        # Handle Previous steps
+        elif step in ['1', '2', '3']:
+            request.session['current_step'] = step
+            request.session.modified = True
+            current_step = step
+    
+    # GET request or invalid POST
+    return render(request, 'restaurents/add_restaurant.html', {
         'form': form,
-        'package': packages,
+        'packages': packages,
         'current_step': current_step,
         'current_user': request.user
     })

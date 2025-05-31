@@ -752,57 +752,42 @@ ADD RESTAURENT
 </script>
 {% endblock footer %} {% endcomment %}
 
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script>
 
 
+{% extends "core/base.html" %}
 {% load static %}
 
 {% block title %}
 ADD RESTAURANT
-{% endblock title %}
+{% endblock %}
 
 {% block content %}
 <section class="register-restaurent-sec section-padding bg-light-theme">
     <div class="container-fluid">
+        {% if messages %}
+            <div class="row">
+                <div class="col-12">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        {% if form.errors %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li>{{ field }}: {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
         <div class="row">
             <div class="col-lg-9">
                 <div class="sidebar-tabs main-box padding-20 mb-md-40">
@@ -845,9 +830,9 @@ ADD RESTAURANT
                                     <button class="btn-first white-btn none" id="prev-1" data-step="1">Previous</button>
                                     <button class="btn-first white-btn none" id="prev-2" data-step="2">Previous</button>
                                     <button class="btn-first white-btn none" id="prev-3" data-step="3">Previous</button>
-                                    <button class="btn-first white-btn" id="next-1" data-step="1">Next</button>
-                                    <button class="btn-first white-btn none" id="next-2" data-step="2">Next</button>
-                                    <button class="btn-first white-btn none" id="next-3" data-step="3">Next</button>
+                                    <button class="btn-first white-btn" id="next-1" data-step="2">Next</button>
+                                    <button class="btn-first white-btn none" id="next-2" data-step="3">Next</button>
+                                    <button class="btn-first white-btn none" id="next-3" data-step="4">Next</button>
                                     <button class="btn-first white-btn none" id="finish-4" data-step="4">Finish</button>
                                 </div>
                             </div>
@@ -857,7 +842,7 @@ ADD RESTAURANT
                                         <div class="general-sec">
                                             <form method="POST" id="form-step-1">
                                                 {% csrf_token %}
-                                                <input type="hidden" name="step" value="1">
+                                                <input type="hidden" name="step" value="2">
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <h5 class="text-light-black fw-700">General Information</h5>
@@ -935,7 +920,7 @@ ADD RESTAURANT
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="text-light-black fw-700">Find On Map</label>
-                                                            <input type="text" name="address" class="form-control form-control-submit" placeholder="Type Your Address">
+                                                            <input type="text" name="address" class="form-control form-control-submit" placeholder="Type Your Address" value="{{ form.address.value|default:'' }}">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
@@ -998,8 +983,7 @@ ADD RESTAURANT
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <label class="custom-checkbox text-light-black fw-700">
-                                                            <input type="checkbox" name="terms_accepted" required> 
-                                                            <span class="checkmark"></span>By Registering You Confirm That You Accept The <a href="#">Terms & Conditions</a> And <a href="#">Privacy Policy</a>
+                                                            <input type="checkbox" name="terms_accepted" required {% if form.terms_accepted.value %}checked{% endif %}> <span class="checkmark"></span>By Registering You Confirm That You Accept The <a href="#">Terms & Conditions</a> And <a href="#">Privacy Policy</a>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -1029,7 +1013,7 @@ ADD RESTAURANT
                                                             </ul>
                                                             <form method="POST" id="form-step-2-{{ pkg.id }}">
                                                                 {% csrf_token %}
-                                                                <input type="hidden" name="step" value="2">
+                                                                <input type="hidden" name="step" value="3">
                                                                 <input type="hidden" name="package_id" value="{{ pkg.id }}">
                                                                 <button type="submit" class="btn-second btn-submit full-width">Choose Plan</button>
                                                             </form>
@@ -1044,7 +1028,7 @@ ADD RESTAURANT
                                         <div class="payment-sec">
                                             <form method="POST" id="form-step-3">
                                                 {% csrf_token %}
-                                                <input type="hidden" name="step" value="3">
+                                                <input type="hidden" name="step" value="4">
                                                 <div class="section-header-left">
                                                     <h3 class="text-light-black header-title">Payment Information</h3>
                                                 </div>
@@ -1258,9 +1242,9 @@ ADD RESTAURANT
                                                                         <p class="text-center text-light-black no-margin">By placing your order, you agree to Munchbox's <a href="#">Terms of Use</a> and <a href="#">Privacy Agreement</a></p>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <button type="submit" class="btn-first green-btn text-custom-white full-width fw-500">Confirm Payment</button>
+                                                                <div class="form-group">
+                                                                    <button type="submit" class="btn-first green-btn text-custom-white full-width fw-500">Confirm Payment</button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1275,8 +1259,8 @@ ADD RESTAURANT
                                                     <div class="msg-wrapper text-center">
                                                         <div class="wrapper-1 bg-black padding-20 mb-xl-20">
                                                             <h1 class="text-light-green mb-2">Thank You</h1>
-                                                            <h3 class="text-custom-white">We are looking forward to your next order.</h3>
-                                                            <p class="text-custom-white">You have successfully created your restaurant. To add more details, check your email inbox for login details.</p>
+                                                            <h3 class="text-custom-white">We are looking forward for next order.</h3>
+                                                            <p class="text-custom-white">You have successfully created your restaurant, to add more details, go to your email inbox for login details</p>
                                                         </div>
                                                         <div class="row text-left">
                                                             <div class="col-md-6">
@@ -1286,56 +1270,54 @@ ADD RESTAURANT
                                                                             <img src="assets/img/package/shop-2.jpg" class="img-fluid full-width" alt="product-img">
                                                                         </a>
                                                                         <div class="overlay">
-                                                                            <div class="product-tags padding-10">
-                                                                                <span class="circle-tag">
-                                                                                    <img src="assets/img/svg/013-heart-1.svg" alt="tag">
-                                                                                </span>
-                                                                                <div class="custom-tag">
-                                                                                    <span class="text-custom-white rectangle-tag bg-gradient-red">10%</span>
+                                                                            <div class="product-tags padding-10"> <span class="circle-tag">
+                                                                            <img src="assets/img/svg/013-heart-1.svg" alt="tag">
+                                                                          </span>
+                                                                                <div class="custom-tag"> <span class="text-custom-white rectangle-tag bg-gradient-red">
+                                                                                      10%
+                                                                                    </span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="product-caption">
                                                                         <div class="title-box">
-                                                                            <h6 class="product-title"><a href="restaurant.html" class="text-light-black">Great Burger</a></h6>
-                                                                            <div class="tags">
-                                                                                <span class="text-custom-white rectangle-tag bg-yellow">3.1</span>
+                                                                            <h6 class="product-title"><a href="restaurant.html" class="text-light-black "> Great Burger</a></h6>
+                                                                            <div class="tags"> <span class="text-custom-white rectangle-tag bg-yellow">
+                                                                            3.1
+                                                                          </span>
                                                                             </div>
                                                                         </div>
                                                                         <p class="text-light-white">American, Fast Food</p>
                                                                         <div class="product-details">
-                                                                            <div class="price-time">
-                                                                                <span class="text-light-black time">30-40 min</span>
-                                                                                <span class="text-light-white price">$35 min</span>
+                                                                            <div class="price-time"> <span class="text-light-black time">30-40 min</span>
+                                                                                <span class="text-light-white price">$10 min</span>
                                                                             </div>
-                                                                            <div class="rating">
-                                                                                <span>
-                                                                                    <i class="fas fa-star"></i>
-                                                                                    <i class="fas fa-star"></i>
-                                                                                    <i class="fas fa-star"></i>
-                                                                                    <i class="fas fa-star"></i>
-                                                                                    <i class="fas fa-star"></i>
-                                                                                </span>
+                                                                            <div class="rating"> <span>
+                                                                                <i class="fas fa-star text-yellow"></i>
+                                                                                <i class="fas fa-star text-yellow"></i>
+                                                                                <i class="fas fa-star text-yellow"></i>
+                                                                                <i class="fas fa-star text-yellow"></i>
+                                                                                <i class="fas fa-star text-yellow"></i>
+                                                                              </span>
                                                                                 <span class="text-light-white text-right">4225 ratings</span>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="product-footer">
+                                                                        <div class="product-footer"> <span class="text-custom-white square-tag">
+                                                                          <img src="assets/img/svg/004-leaf.svg" alt="tag">
+                                                                        </span>
                                                                             <span class="text-custom-white square-tag">
-                                                                                <img src="assets/img/svg/004-leaf.svg" alt="tag">
-                                                                            </span>
+                                                                          <img src="assets/img/svg/006-chili.svg" alt="tag">
+                                                                        </span>
                                                                             <span class="text-custom-white square-tag">
-                                                                                <img src="img/svg/006-chili.svg" alt="tag">
-                                                                            </span>
+                                                                          <img src="assets/img/svg/005-chef.svg" alt="tag">
+                                                                        </span>
                                                                             <span class="text-custom-white square-tag">
-                                                                                <img src="img/svg/005-chili.svg" alt="tag">
-                                                                            </span>
+                                                                          <img src="assets/img/svg/008-protein.svg" alt="tag">
+                                                                        </span>
                                                                             <span class="text-custom-white square-tag">
-                                                                                <img src="assets/img/svg/008-protein.svg" alt="tag">
-                                                                            </span>
-                                                                            <span class="text-custom-white square-tag">
-                                                                                <img src="assets/img/svg/009-lemon.svg" alt="tag">
-                                                                            </span>
+                                                                          <img src="assets/img/svg/009-lemon.svg" alt="tag">
+                                                                        </span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1347,47 +1329,44 @@ ADD RESTAURANT
                                                                             <img src="assets/img/package/shop-1.jpg" class="img-fluid full-width" alt="product-img">
                                                                         </a>
                                                                         <div class="overlay">
-                                                                            <div class="product-tags padding-10">
-                                                                                <span class="circle-tag">
-                                                                                    <img src="assets/img/svg/013-heart-1.svg" alt="tag">
-                                                                                </span>
+                                                                            <div class="product-tags padding-10"> <span class="circle-tag">
+                                                                                <img src="assets/img/svg/013-heart-1.svg" alt="tag">
+                                                                              </span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="product-caption">
                                                                         <div class="title-box">
-                                                                            <h6 class="product-title"><a href="restaurant.html" class="text-light-black">Flavor Town</a></h6>
-                                                                            <div class="tags">
-                                                                                <span class="text-custom-white rectangle-tag bg-red">2.1</span>
+                                                                            <h6 class="product-title"><a href="restaurant.html" class="text-light-black "> Flavor Town</a></h6>
+                                                                            <div class="tags"> <span class="text-custom-white rectangle-tag bg-red">
+                                                                            2.1
+                                                                          </span>
                                                                             </div>
                                                                         </div>
                                                                         <p class="text-light-white">Breakfast, Lunch & Dinner</p>
                                                                         <div class="product-details">
-                                                                            <div class="price-time">
-                                                                                <span class="text-light-black time">30-40 min</span>
+                                                                            <div class="price-time"> <span class="text-light-black time">30-40 min</span>
                                                                                 <span class="text-light-white price">$10 min</span>
                                                                             </div>
-                                                                            <div class="rating">
-                                                                                <span>
-                                                                                    <i class="fas fa-star"></i>
-                                                                                    <i class="fas fa-star"></i>
-                                                                                    <i class="fas fa-star"></i>
-                                                                                    <i class="fas fa-star"></i>
-                                                                                    <i class="fas fa-star"></i>
-                                                                                </span>
+                                                                            <div class="rating"> <span>
+                                                                            <i class="fas fa-star text-yellow"></i>
+                                                                            <i class="fas fa-star text-yellow"></i>
+                                                                            <i class="fas fa-star text-yellow"></i>
+                                                                            <i class="fas fa-star text-yellow"></i>
+                                                                            <i class="fas fa-star text-yellow"></i>
+                                                                          </span>
                                                                                 <span class="text-light-white text-right">4225 ratings</span>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="product-footer">
+                                                                        <div class="product-footer"> <span class="text-custom-white square-tag">
+                                                                          <img src="assets/img/svg/007-chili-1.svg" alt="tag">
+                                                                        </span>
                                                                             <span class="text-custom-white square-tag">
-                                                                                <img src="assets/img/svg/007-chili-1.svg" alt="tag">
-                                                                            </span>
+                                                                          <img src="assets/img/svg/004-leaf.svg" alt="tag">
+                                                                        </span>
                                                                             <span class="text-custom-white square-tag">
-                                                                                <img src="assets/img/svg/004-leaf.svg" alt="tag">
-                                                                            </span>
-                                                                            <span class="text-custom-white square-tag">
-                                                                                <img src="assets/img/svg/009-lemon.svg" alt="tag">
-                                                                            </span>
+                                                                          <img src="assets/img/svg/009-lemon.svg" alt="tag">
+                                                                        </span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1395,12 +1374,15 @@ ADD RESTAURANT
                                                         </div>
                                                         <p class="text-light-black">For cancellation or more information Please Contact Us</p>
                                                         <ul class="contact-details">
-                                                            <li><i class="fas fa-phone-alt text-light-green"></i>
-                                                                <span><a href="tel:" class="text-light-black">(347) 4567890</a></span></li>
-                                                            <li><i class="fas fa-fax"></i>
-                                                                <span class="text-light-black"><a href="tel: class="text-light-black" href="#">(347) 123456789</a></span></li>
-                                                            <li><i class="far fa-envelope"></i>
-                                                                <span><a href="mailto:" class="text-light-black">demo@domain.com</a></span></li>
+                                                            <li> <i class="fas fa-phone-alt text-light-black"></i>
+                                                                <span><a href="tel:" class="text-light-black">(347) 123456789</a></span>
+                                                            </li>
+                                                            <li> <i class="fas fa-fax text-light-black"></i>
+                                                                <span><a href="tel:" class="text-light-black">(347) 123456789</a></span>
+                                                            </li>
+                                                            <li> <i class="far fa-envelope text-light-black"></i>
+                                                                <span><a href="mailto:" class="text-light-black">demo@domain.com</a></span>
+                                                            </li>
                                                         </ul>
                                                         <button type="submit" class="btn-first green-btn text-custom-white full-width">Save & Preview</button>
                                                     </div>
@@ -1411,6 +1393,7 @@ ADD RESTAURANT
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-3">
@@ -1418,62 +1401,62 @@ ADD RESTAURANT
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
                             <div class="large-product-box p-relative pb-0">
-                                <img src="assets/img/sidebanner-1.jpg" class="img-fluid full-width" alt="image">
+                                <img src="{{ static 'assets/img/sidebanner-1.jpg' }}" class="img-fluid full-width" alt="Image">
                                 <div class="overlay padding-20">
                                     <div class="tag-box">
                                         <span class="text-custom-white rectangle-tag bg-gradient-red">Trending</span>
                                     </div>
                                     <div class="content-wrapper">
                                         <h3 class="text-custom-white">50% Discount on All New Restaurants</h3>
-                                        <a href="#" class="btn btn-submit btn-second">Get Deals</a>
+                                        <a href="#" class="btn-submit btn-second">Get Deals</a>
                                     </div>
                                 </div>
-                                <div class="overlay-bg"></div>
+                                <div class="overlay overlay-bg"></div>
                             </div>
                         </div>
                         <div class="swiper-slide">
                             <div class="large-product-box p-relative pb-0">
-                                <img src="assets/img/sidebanner-2.jpg" class="img-fluid full-width" alt="image">
-                                <div class="text-wrapper padding-20">
+                                <img src="{{ static 'assets/img/sidebanner-2.jpg' }}" class="img-fluid full-width" alt="Image">
+                                <div class="overlay padding-20">
                                     <div class="tag-box">
-                                        <span class="text-custom-white rectangle-tag bg-gradient-red">New</span>
+                                        <span class="text-custom-white rectangle-tag bg-green">New</span>
                                     </div>
                                     <div class="content-wrapper">
                                         <h3 class="text-custom-white">50% Discount on All New Restaurants</h3>
-                                        <a href="#" class="btn btn-submit btn-second">Get Deals</a>
+                                        <a href="#" class="btn-submit btn-second">Get Deals</a>
                                     </div>
                                 </div>
-                                <div class="overlay-bg"></div>
+                                <div class="overlay overlay-bg"></div>
                             </div>
                         </div>
                         <div class="swiper-slide">
                             <div class="large-product-box p-relative pb-0">
-                                <img src="assets/img/sidebanner-3.jpg" class="img-fluid full-width" alt="image">
+                                <img src="{{ static 'assets/img/sidebanner-3.jpg' }}" class="img-fluid full-width" alt="Image">
                                 <div class="overlay padding-20">
                                     <div class="tag-box">
                                         <span class="text-custom-white rectangle-tag bg-gradient-red">Trending</span>
                                     </div>
                                     <div class="content-wrapper">
                                         <h3 class="text-custom-white">50% Discount on All New Restaurants</h3>
-                                        <a href="#" class="btn btn-submit btn-second">Get Deals</a>
+                                        <a href="#" class="btn-submit btn-second">Get Deals</a>
                                     </div>
                                 </div>
-                                <div class="overlay-bg"></div>
+                                <div class="overlay overlay-bg"></div>
                             </div>
                         </div>
                         <div class="swiper-slide">
                             <div class="large-product-box p-relative pb-0">
-                                <img src="assets/img/sidebanner-2.jpg" class="img-fluid full-width" alt="image">
+                                <img src="{{ static 'assets/img/sidebanner-2.jpg' }}" class="img-fluid full-width" alt="Image">
                                 <div class="overlay padding-20">
                                     <div class="tag-box">
-                                        <span class="text-custom-white rectangle-tag bg-gradient-red">New</span>
+                                        <span class="text-custom-white rectangle-tag bg-green">New</span>
                                     </div>
                                     <div class="content-wrapper">
                                         <h3 class="text-custom-white">50% Discount on All New Restaurants</h3>
-                                        <a href="#" class="btn btn-submit btn-second">Get Deals</a>
+                                        <a href="#" class="btn-submit btn-second">Get Deals</a>
                                     </div>
                                 </div>
-                                <div class="overlay-bg"></div>
+                                <div class="overlay overlay-bg"></div>
                             </div>
                         </div>
                     </div>
@@ -1484,47 +1467,54 @@ ADD RESTAURANT
         </div>
     </div>
 </section>
-
 {% endblock content %}
 
 {% block footer %}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const currentStep = "{{ current_step }}";
+        let currentStep = "{{ current_step | default:'1' }}";
         const steps = ["steppanel1", "steppanel2", "steppanel3", "steppanel4"];
         const stepButtons = ["step1", "step2", "step3", "step4"];
         const stepSideButtons = ["stepbtn1", "stepbtn2", "stepbtn3", "stepbtn4"];
 
-        // Update active step panel
-        steps.forEach(step => {
-            const element = document.getElementById(step);
-            if (element) element.classList.remove("active");
-        });
-        const currentPanel = document.getElementById(`steppanel${currentStep}`);
-        if (currentPanel) currentPanel.classList.add("active");
+        // Default to Step 1 if currentStep is undefined or invalid
+        if (!currentStep || !steps.includes(`steppanel${currentStep}`)) {
+            currentStep = "1";
+            document.getElementById("steppanel1").classList.add("active");
+            document.getElementById("step1").classList.add("active");
+            document.getElementById("stepbtn1").classList.add("active");
+        } else {
+            // Update active step panel
+            steps.forEach(step => {
+                const element = document.getElementById(step);
+                if (element) element.classList.remove("active");
+            });
+            const currentPanel = document.getElementById(`steppanel${currentStep}`);
+            if (currentPanel) currentPanel.classList.add("active");
 
-        // Update active step button
-        stepButtons.forEach(btn => {
-            const element = document.getElementById(btn);
-            if (element) element.classList.remove("active");
-        });
-        const currentStepBtn = document.getElementById(`step${currentStep}`);
-        if (currentStepBtn) currentStepBtn.classList.add("active");
+            // Update active step button
+            stepButtons.forEach(btn => {
+                const element = document.getElementById(btn);
+                if (element) element.classList.remove("active");
+            });
+            const currentStepBtn = document.getElementById(`step${currentStep}`);
+            if (currentStepBtn) currentStepBtn.classList.add("active");
 
-        // Update active sidebar step button
-        stepSideButtons.forEach(btn => {
-            const element = document.getElementById(btn);
-            if (element) element.classList.remove("active");
-        });
-        const currentSideBtn = document.getElementById(`stepbtn${currentStep}`);
-        if (currentSideBtn) currentSideBtn.classList.add("active");
+            // Update active sidebar step button
+            stepSideButtons.forEach(btn => {
+                const element = document.getElementById(btn);
+                if (element) element.classList.remove("active");
+            });
+            const currentSideBtn = document.getElementById(`stepbtn${currentStep}`);
+            if (currentSideBtn) currentSideBtn.classList.add("active");
+        }
 
         // Show/hide navigation buttons based on current step
-        const prevButtons = document.querySelectorAll("[id^='prev']");
-        const nextButtons = document.querySelectorAll("[id^='next']");
+        const prevButtons = document.querySelectorAll("[id^='prev-']");
+        const nextButtons = document.querySelectorAll("[id^='next-']");
         const finishButton = document.getElementById("finish-4");
 
-        prevButtons.forEach(btn => btn.classList.add("none");
+        prevButtons.forEach(btn => btn.classList.add("none"));
         nextButtons.forEach(btn => btn.classList.add("none"));
         if (finishButton) finishButton.classList.add("none");
 
@@ -1543,56 +1533,103 @@ ADD RESTAURANT
 
         // Handle navigation button clicks
         document.querySelectorAll(".btn-first").forEach(button => {
-            button.addEventListener("click", function(e) => {
+            button.addEventListener("click", function(e) {
                 e.preventDefault();
-                const buttonId = this.id;
                 const step = this.getAttribute("data-step");
-                let targetStep;
+                const buttonId = this.id;
+                let targetForm;
 
                 if (buttonId.startsWith("prev-")) {
-                    targetStep = parseInt(step) - 1;
+                    // For Previous, submit to the previous step
+                    const prevStep = parseInt(step) - 1;
+                    targetForm = document.querySelector(`#form-step-${prevStep}`) || 
+                                 document.querySelector(`#form-step-2-${document.querySelector('input[name="package_id"]')?.value}`);
+                    if (targetForm) {
+                        const hiddenStep = targetForm.querySelector("input[name='step']");
+                        hiddenStep.value = prevStep;
+                        targetForm.submit();
+                    }
                 } else if (buttonId.startsWith("next-") || buttonId === "finish-4") {
-                    targetStep = parseInt(step);
-                }
+                    // For Next or Finish, validate and submit the current step's form
+                    if (step === "2") {
+                        targetForm = document.getElementById("form-step-1");
+                    } else if (step === "3") {
+                        const packageId = document.querySelector('input[name="package_id"]')?.value;
+                        targetForm = document.querySelector(`#form-step-2-${packageId}`);
+                    } else if (step === "4") {
+                        targetForm = document.getElementById("form-step-3") || document.getElementById("form-step-4");
+                    }
 
-                if (targetStep) {
-                    const form = document.querySelector(`#form-step-${step}`);
-                    if (form) {
-                        const hiddenStep = form.querySelector("input[name='step']");
-                        hiddenStep.value = targetStep;
-                        form.submit();
+                    if (targetForm) {
+                        // Client-side validation for Step 1
+                        if (step === "2") {
+                            const requiredFields = targetForm.querySelectorAll("[required]");
+                            let isValid = true;
+                            requiredFields.forEach(field => {
+                                if (!field.value.trim()) {
+                                    isValid = false;
+                                    field.classList.add("is-invalid");
+                                } else {
+                                    field.classList.remove("is-invalid");
+                                }
+                            });
+                            if (!isValid) {
+                                alert("Please fill out all required fields.");
+                                return false;
+                            }
+                        }
+                        const hiddenStep = targetForm.querySelector("input[name='step']");
+                        hiddenStep.value = step;
+                        targetForm.submit();
+                    } else {
+                        console.error("Form not found for step: " + step);
                     }
                 }
             });
         });
 
         // Prevent sidebar navigation
-        document.querySelectorAll(".stepbtn, .add-res-tab a").forEach(link => {
+        document.querySelectorAll(".stepbtn a, .add-res-tab a").forEach(link => {
             link.addEventListener("click", function(e) {
                 e.preventDefault();
             });
         });
 
-    function searchLocation() {
-        const addressInput = document.querySelector('input[name="address"]').value;
-        if (addressInput) {
-            const encodedAddress = encodeURIComponent(addressInput);
-            const mapUrl = `https://maps.googleapis.com/maps/api/iframe?center=${encodedAddress}&q=${encodedAddress}&z=13&ie=UTF8&iwloc=&output=embed`;
-            document.getElementById('locmap').src = mapUrl;
-        } else {
-            alert("Please enter an address to search.");
+        // Search location function
+        window.searchLocation = function() {
+            const searchInput = document.querySelector('input[name="address"]');
+            if (searchInput && searchInput.value.trim()) {
+                const encodedAddress = encodeURIComponent(searchInput.value.trim());
+                const mapUrl = `https://maps.google.com/maps?q=${encodedAddress}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+                const mapIframe = document.getElementById('locmap');
+                if (mapIframe) {
+                    mapIframe.src = mapUrl;
+                } else {
+                    console.error("Map iframe not found");
+                }
+            } else {
+                alert("Please enter an address to search.");
+            }
         }
-    }
 
-    function applyPromo() {
-        const promoCode = document.querySelector('input[name="promo_code"]').value;
-        if (promoCode) {
-            alert(`Promo code: ${promoCode}`);
-            // Add AJAX call to validate promo code if needed
-        } else {
-            alert("Please enter a promo code.");
+        // Apply promo code function (placeholder)
+        window.applyPromo = function() {
+            const promoInput = document.querySelector('input[name="promo_code"]');
+            if (promoInput && promoInput.value.trim()) {
+                alert(`Applying promo code: ${promoInput.value.trim()}`);
+                // TODO: Implement AJAX call to validate promo code
+            } else {
+                alert("Please enter a promo code.");
+            }
         }
-    }
-});
+    });
 </script>
+<style>
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+    .alert ul {
+        margin-bottom: 0;
+    }
+</style>
 {% endblock footer %}
